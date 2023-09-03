@@ -28,7 +28,7 @@ return;
 }
 
 
-//consulta de api
+//consulta de api...
 consultarAPI(ciudad, pais)
 
 }
@@ -46,26 +46,16 @@ function mostrarError(){
 
 }
 
-function mostrarError2(){
-
-    Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Error! Ciudad no encontrada',
-        
-      })
-}
-
 function consultarAPI(ciudad, pais ) {
-    // Consultar la API e imprimir el Resultado...
+    
 
-// leer la url  y agregar el API key
+// leer la url  y agregar el API key en caso de no funcionar cambiar la api key
 const appId = 'a10eed07d8e34c806d55b549d7c7ff81';
 let url = `http://api.openweathermap.org/data/2.5/weather?q=${ciudad},${pais}&appid=${appId}`;
 
-Spinner();
+Borrado();
 
-// query con fetch api
+
 fetch(url)
   .then(respuesta => {
     return respuesta.json();
@@ -73,8 +63,12 @@ fetch(url)
   .then(datos => {
 
     if(datos.cod === "404") {
-      mostrarError2();
-      setInterval("location.reload()");
+        Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Error! Ciudad no encontrada',
+        
+      })
 
     } else {
       mostrarClima(datos)
@@ -89,15 +83,12 @@ fetch(url)
 
 function mostrarClima(datos) {
 
-    
-  
     const { name, main: { temp, temp_max, temp_min } } = datos;
-  
-  
+    
     const grados = KelvinACentigrados(temp);
     const min = KelvinACentigrados(temp_max);
     const max = KelvinACentigrados(temp_min);
-  
+  //mostrando los resultados y aplicando css con tailwind
     const nombreCiudad = document.createElement('p');
     nombreCiudad.innerHTML = `Clima en: ${name}`;
     nombreCiudad.classList.add('font-bold', 'text-3xl')
@@ -109,13 +100,11 @@ function mostrarClima(datos) {
     const tempMaxima = document.createElement('p');
     tempMaxima.innerHTML = `Max: ${max} &#8451;`;
     tempMaxima.classList.add('text-2xl')
-  
-  
+    
     const tempMinima = document.createElement('p');
     tempMinima.innerHTML = `Min: ${min} &#8451;`;
     tempMinima.classList.add('text-2xl')
-  
-  
+    
     const resultadoDiv = document.createElement('div');
     resultadoDiv.classList.add('text-center', 'text-white')
     resultadoDiv.appendChild(nombreCiudad);
@@ -127,7 +116,7 @@ function mostrarClima(datos) {
   }
 
   function KelvinACentigrados(grados) {
-    return parseInt( grados - 273.15);
+    return parseInt( grados - 273.15); //formula para pasar los grados kelvin a celsius
   }
   
   function limpiarHTML() {
@@ -135,9 +124,9 @@ function mostrarClima(datos) {
         resultado.removeChild(resultado.firstChild);
     }
   }
-  // Formatear el Clima...
+  // borrado de la busqueda
   
-  function Spinner() {
+  function Borrado() {
   
     limpiarHTML();
   
